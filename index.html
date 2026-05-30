@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eastside Gear Library</title>
+  <meta name="description" content="A community lending library for outdoor gear in the Bellevue-Redmond area. Removing financial barriers to the outdoors." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300;1,9..144,700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --lime:   #C8F04A;
+      --teal:   #00D4B4;
+      --sky:    #6ECFF6;
+      --coral:  #FF6B4A;
+      --purple: #8B5CF6;
+      --ink:    #0D1A0F;
+      --ink2:   #1C2E1F;
+      --cream:  #F6F3EE;
+      --warm:   #FFF8F0;
+      --muted:  #6B7A66;
+      --nav-h:  68px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      background: var(--ink);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-size: 1rem; font-weight: 800;
+      color: var(--lime);
+      letter-spacing: -0.02em;
+    }
+    .logo-badge {
+      width: 36px; height: 36px;
+      background: var(--lime);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-badge svg { width: 20px; height: 20px; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      color: rgba(246,243,238,0.65);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--lime); }
+    .nav-cta {
+      background: var(--lime) !important;
+      color: var(--ink) !important;
+      padding: 9px 22px !important;
+      border-radius: 100px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+    }
+    .nav-cta:hover { background: #b8e03a !important; }
+    .menu-toggle { display: none; background: none; border: none; cursor: pointer; }
+    .menu-toggle span { display: block; width: 24px; height: 2px; background: var(--cream); margin: 5px 0; }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: var(--ink);
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding-left: 7vw; padding-right: 7vw;
+      padding-bottom: 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-blobs {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: 0.18;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--lime); top: -100px; right: -80px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--teal); bottom: -80px; left: 10%; }
+    .blob-3 { width: 300px; height: 300px; background: var(--coral); top: 30%; right: 20%; }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--lime);
+      margin-bottom: 2rem;
+    }
+    .hero-kicker-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--lime);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+    .hero-h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--cream);
+      margin-bottom: 2rem;
+      max-width: 14ch;
+    }
+    .hero-h1 .accent { color: var(--lime); font-style: italic; }
+    .hero-h1 .accent-teal { color: var(--teal); }
+    .hero-sub {
+      font-size: clamp(1rem, 1.6vw, 1.2rem);
+      line-height: 1.75;
+      color: rgba(246,243,238,0.65);
+      max-width: 46ch;
+      margin-bottom: 3rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-lime {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--lime); color: var(--ink);
+      text-decoration: none; padding: 15px 30px;
+      border-radius: 100px; font-weight: 800; font-size: 0.95rem;
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn-lime:hover { transform: translateY(-2px) scale(1.02); background: #b8e03a; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--cream);
+      text-decoration: none; padding: 15px 30px;
+      border-radius: 100px; font-weight: 700; font-size: 0.95rem;
+      border: 1.5px solid rgba(246,243,238,0.3);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--cream); background: rgba(246,243,238,0.07); }
+
+    .hero-tag-row {
+      display: flex; gap: 0.75rem; flex-wrap: wrap;
+      margin-top: 4rem;
+    }
+    .hero-tag {
+      padding: 8px 18px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600;
+      border: 1.5px solid rgba(246,243,238,0.15);
+      color: rgba(246,243,238,0.5);
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrap {
+      background: var(--lime);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 14px 0;
+      border-top: 3px solid var(--ink);
+      border-bottom: 3px solid var(--ink);
+    }
+    .marquee-track {
+      display: inline-block;
+      animation: marquee 22s linear infinite;
+    }
+    .marquee-track span {
+      font-size: 0.88rem; font-weight: 800;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--ink); padding: 0 2.5rem;
+    }
+    .marquee-track span::after { content: '✦'; margin-left: 2.5rem; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ─── SECTION BASE ─── */
+    .section { padding: 7rem 7vw; }
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.72rem; font-weight: 800; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .section-label::before { content: ''; display: block; width: 20px; height: 2px; background: currentColor; }
+    .display-h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 700; line-height: 1.15;
+      letter-spacing: -0.025em;
+      color: var(--ink); margin-bottom: 1.2rem;
+    }
+    .display-h2 em { font-style: italic; }
+    .body-lead {
+      font-size: 1.05rem; line-height: 1.8;
+      color: var(--muted); max-width: 54ch;
+      margin-bottom: 3rem;
+    }
+
+    /* ─── PURPOSE ─── */
+    .purpose-section { background: var(--cream); }
+    .purpose-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+    }
+    .purpose-quote {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      font-weight: 300; font-style: italic;
+      line-height: 1.5; color: var(--ink);
+      border-left: 4px solid var(--lime);
+      padding-left: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .purpose-body {
+      font-size: 1rem; line-height: 1.85; color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── PILLARS ─── */
+    .pillars-section { background: var(--ink); }
+    .pillars-section .display-h2 { color: var(--cream); }
+    .pillars-section .body-lead { color: rgba(246,243,238,0.55); }
+    .pillars-section .section-label { color: rgba(246,243,238,0.35); }
+    .pillars-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1.5px;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 20px; overflow: hidden;
+    }
+    .pillar-card {
+      padding: 3rem 2rem;
+      background: rgba(255,255,255,0.03);
+      border-right: 1.5px solid rgba(255,255,255,0.08);
+      transition: background 0.25s;
+    }
+    .pillar-card:last-child { border-right: none; }
+    .pillar-card:hover { background: rgba(255,255,255,0.07); }
+    .pillar-num {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem; font-weight: 700; font-style: italic;
+      line-height: 1; margin-bottom: 1rem;
+    }
+    .p-lime { color: var(--lime); }
+    .p-teal { color: var(--teal); }
+    .p-coral { color: var(--coral); }
+    .pillar-card h3 {
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--cream); margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    .pillar-card p {
+      font-size: 0.9rem; line-height: 1.75;
+      color: rgba(246,243,238,0.55);
+    }
+
+    /* ─── IMPACT NUMBERS ─── */
+    .impact-section { background: var(--lime); }
+    .impact-section .display-h2 { color: var(--ink); }
+    .impact-section .body-lead { color: rgba(13,26,15,0.65); }
+    .impact-section .section-label { color: rgba(13,26,15,0.5); }
+    .numbers-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 2rem; margin-top: 1rem;
+    }
+    .number-block { border-top: 2px solid rgba(13,26,15,0.2); padding-top: 1.5rem; }
+    .number-big {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 700; line-height: 1; letter-spacing: -0.03em;
+      color: var(--ink); margin-bottom: 0.4rem;
+    }
+    .number-label { font-size: 0.9rem; color: rgba(13,26,15,0.6); font-weight: 500; line-height: 1.5; }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-section { background: var(--warm); }
+    .how-steps {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2rem; margin-top: 3rem;
+    }
+    .how-step { position: relative; }
+    .how-step::after {
+      content: '→';
+      position: absolute; right: -1.2rem; top: 1.5rem;
+      font-size: 1.2rem; color: var(--muted);
+    }
+    .how-step:last-child::after { display: none; }
+    .step-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 14px;
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    .chip-1 { background: var(--lime); }
+    .chip-2 { background: var(--teal); }
+    .chip-3 { background: var(--sky); }
+    .chip-4 { background: var(--coral); color: #fff; }
+    .how-step h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; }
+    .how-step p { font-size: 0.87rem; line-height: 1.7; color: var(--muted); }
+
+    /* ─── MEMBERSHIP TEASER ─── */
+    .membership-section {
+      background: var(--ink2);
+      color: var(--cream);
+    }
+    .membership-section .display-h2 { color: var(--cream); }
+    .membership-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .membership-card {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 24px; padding: 3rem;
+      position: relative; overflow: hidden;
+    }
+    .membership-card::before {
+      content: '?';
+      position: absolute; right: 1.5rem; top: 1rem;
+      font-family: 'Fraunces', serif;
+      font-size: 8rem; font-weight: 700; font-style: italic;
+      color: rgba(200,240,74,0.08); line-height: 1;
+      pointer-events: none;
+    }
+    .membership-card h3 {
+      font-size: 1.1rem; font-weight: 700; color: var(--lime);
+      margin-bottom: 0.4rem; text-transform: uppercase;
+      letter-spacing: 0.08em; font-size: 0.8rem;
+    }
+    .price-big {
+      font-family: 'Fraunces', serif;
+      font-size: 3.5rem; font-weight: 700; font-style: italic;
+      color: var(--cream); line-height: 1; margin-bottom: 0.5rem;
+    }
+    .price-note { font-size: 0.88rem; color: rgba(246,243,238,0.5); margin-bottom: 1.5rem; }
+    .price-feature {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.9rem; color: rgba(246,243,238,0.7);
+      padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .price-feature:last-child { border-bottom: none; }
+    .price-feature .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+    .membership-text { color: rgba(246,243,238,0.65); font-size: 1rem; line-height: 1.8; }
+    .membership-text p { margin-bottom: 1.2rem; }
+
+    /* ─── CONTACT ─── */
+    .contact-section { background: var(--cream); }
+    .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact-form-wrap {
+      background: var(--ink); border-radius: 24px; padding: 3rem;
+    }
+    .contact-form-wrap h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--cream);
+      margin-bottom: 0.5rem;
+    }
+    .contact-form-wrap .form-sub {
+      font-size: 0.88rem; color: rgba(246,243,238,0.5); margin-bottom: 2rem;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block; font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(246,243,238,0.4); margin-bottom: 0.5rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 10px; padding: 12px 14px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.92rem; color: var(--cream);
+      outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group select option { background: var(--ink); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--lime); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: rgba(246,243,238,0.25); }
+    .btn-submit {
+      width: 100%; padding: 15px;
+      background: var(--lime); color: var(--ink);
+      border: none; border-radius: 100px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1rem; font-weight: 800;
+      cursor: pointer; transition: background 0.2s, transform 0.15s;
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover { background: #b8e03a; transform: translateY(-1px); }
+    .form-success {
+      display: none; text-align: center; padding: 2rem 0;
+    }
+    .form-success .big-check {
+      font-size: 3rem; margin-bottom: 1rem;
+    }
+    .form-success p { color: rgba(246,243,238,0.7); font-size: 0.95rem; }
+    .form-success h4 { color: var(--lime); font-size: 1.2rem; margin-bottom: 0.5rem; }
+
+    .contact-info h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.8rem; font-weight: 700; font-style: italic;
+      color: var(--ink); margin-bottom: 0.6rem;
+    }
+    .contact-info p { font-size: 0.95rem; line-height: 1.8; color: var(--muted); margin-bottom: 2rem; }
+    .contact-cards-list { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-info-card {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.2rem 1.4rem;
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid rgba(13,26,15,0.08);
+    }
+    .contact-info-card-icon {
+      width: 42px; height: 42px; min-width: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .icon-lime { background: var(--lime); }
+    .icon-teal { background: var(--teal); }
+    .icon-sky  { background: var(--sky); }
+    .contact-info-card strong { display: block; font-size: 0.82rem; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+    .contact-info-card span { font-size: 0.88rem; color: var(--muted); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      padding: 2.5rem 7vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem; font-weight: 700; font-style: italic;
+      color: var(--lime);
+    }
+    .footer-brand span { color: rgba(246,243,238,0.4); font-style: normal; font-family: 'Bricolage Grotesque', sans-serif; font-size: 0.8rem; display: block; font-weight: 400; margin-top: 2px; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.82rem; color: rgba(246,243,238,0.4); text-decoration: none; }
+    .footer-links a:hover { color: var(--cream); }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 820px) {
+      .purpose-layout, .membership-inner, .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .pillars-grid, .how-steps, .numbers-grid { grid-template-columns: 1fr; }
+      .how-step::after { display: none; }
+      .pillar-card { border-right: none; border-bottom: 1.5px solid rgba(255,255,255,0.08); }
+      .pillar-card:last-child { border-bottom: none; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: var(--nav-h); left: 0; right: 0; background: var(--ink); padding: 1.5rem 5vw; gap: 1.4rem; border-bottom: 2px solid rgba(200,240,74,0.2); }
+      .nav-links.open { display: flex; }
+      .menu-toggle { display: block; }
+      .section { padding: 5rem 5vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-badge">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 20L8 9l5 7 3-5 5 9H3z" fill="#0D1A0F"/>
+      </svg>
+    </div>
+    Eastside Gear Library
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#membership">Membership</a></li>
+    <li><a href="#contact" class="nav-cta">Get Involved</a></li>
+  </ul>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="home">
+  <div class="hero-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="hero-kicker">
+    <div class="hero-kicker-dot"></div>
+    Bellevue · Redmond · The Eastside
+  </div>
+  <h1 class="hero-h1">
+    The outdoors<br/>
+    belong to<br/>
+    <span class="accent">everyone.</span>
+  </h1>
+  <p class="hero-sub">
+    Eastside Gear Library is a community lending library for outdoor equipment — removing financial barriers so every Eastside resident can get outside and explore.
+  </p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-lime">
+      Get Involved ↗
+    </a>
+    <a href="#mission" class="btn-ghost">Our Mission</a>
+  </div>
+  <div class="hero-tag-row">
+    <div class="hero-tag">🏕️ Camping</div>
+    <div class="hero-tag">🥾 Hiking</div>
+    <div class="hero-tag">🛶 Water Sports</div>
+    <div class="hero-tag">❄️ Winter Gear</div>
+    <div class="hero-tag">👨‍👩‍👧 Family Friendly</div>
+  </div>
+</section>
+
+<!-- ─── MARQUEE ─── -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Borrow</span><span>Explore</span><span>Return</span><span>Repeat</span>
+    <span>For Everyone</span><span>No Barriers</span><span>Get Outside</span>
+    <span>Community Gear</span><span>Eastside</span><span>Borrow</span>
+    <span>Explore</span><span>Return</span><span>Repeat</span>
+    <span>For Everyone</span><span>No Barriers</span><span>Get Outside</span>
+    <span>Community Gear</span><span>Eastside</span>
+  </div>
+</div>
+
+<!-- ─── PURPOSE / MISSION ─── -->
+<section class="section purpose-section" id="mission">
+  <div class="purpose-layout">
+    <div>
+      <div class="section-label">Our Purpose</div>
+      <h2 class="display-h2">Why we exist</h2>
+      <blockquote class="purpose-quote">
+        "Nature isn't a luxury. It's a right."
+      </blockquote>
+      <p class="purpose-body">
+        Eastside Gear Library was founded on a simple belief: the cost of a tent or a backpack shouldn't determine whether a family gets to spend a weekend under the stars.
+      </p>
+      <p class="purpose-body">
+        Our specific purpose is to promote <strong>physical health</strong>, <strong>environmental stewardship</strong>, and <strong>equitable access to nature</strong> by operating a community lending library for outdoor recreational equipment — thereby removing financial barriers to the outdoors for residents of the Bellevue-Redmond area and surrounding communities.
+      </p>
+    </div>
+    <div>
+      <div class="section-label">The Region We Serve</div>
+      <h2 class="display-h2">Your backyard is <em>extraordinary.</em></h2>
+      <p class="body-lead" style="margin-bottom:1.5rem">
+        We're surrounded by mountains, lakes, trails, and rivers. The Cascades start practically at our doorstep. Eastside Gear Library exists to make sure everyone — regardless of income — can experience it.
+      </p>
+      <p class="purpose-body">
+        From Tiger Mountain to Cougar Mountain, from Lake Sammamish to the Snoqualmie Valley — this region is one of the most outdoor-rich places in America. We're here to make it truly accessible for all who call the Eastside home.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── THREE PILLARS ─── -->
+<section class="section pillars-section">
+  <div class="section-label">What drives us</div>
+  <h2 class="display-h2" style="color:var(--cream)">Three pillars,<br/><em>one mission.</em></h2>
+  <p class="body-lead" style="margin-bottom:3rem">Everything we do flows from these commitments.</p>
+  <div class="pillars-grid">
+    <div class="pillar-card">
+      <div class="pillar-num p-lime">01</div>
+      <h3>Physical Health</h3>
+      <p>
+        Time outdoors improves mental health, reduces stress, increases physical fitness, and builds community bonds. We believe every Eastside family deserves regular access to these benefits — not just those who can afford expensive gear.
+      </p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num p-teal">02</div>
+      <h3>Environmental Stewardship</h3>
+      <p>
+        Shared gear means less production, less waste, and a lighter footprint. By keeping equipment circulating through our community instead of sitting unused in garages, we collectively reduce our environmental impact.
+      </p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-num p-coral">03</div>
+      <h3>Equitable Access</h3>
+      <p>
+        Quality outdoor gear costs hundreds — sometimes thousands — of dollars. That financial barrier shuts too many people out of the trails, rivers, and mountains surrounding us. We're tearing that barrier down.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── IMPACT NUMBERS ─── -->
+<section class="section impact-section">
+  <div class="section-label">The opportunity</div>
+  <h2 class="display-h2">The Eastside outdoors<br/><em>are for all of us.</em></h2>
+  <div class="numbers-grid">
+    <div class="number-block">
+      <div class="number-big">700k+</div>
+      <div class="number-label">Residents in the greater<br/>Bellevue-Redmond area</div>
+    </div>
+    <div class="number-block">
+      <div class="number-big">$500+</div>
+      <div class="number-label">Cost of a basic camping kit —<br/>before you even leave the driveway</div>
+    </div>
+    <div class="number-block">
+      <div class="number-big">$0</div>
+      <div class="number-label">What it should cost to<br/>experience nature</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="section how-section" id="how">
+  <div class="section-label">The process</div>
+  <h2 class="display-h2">Simple as<br/><em>borrow, explore, return.</em></h2>
+  <p class="body-lead">No complicated sign-up. No gatekeeping. Just gear when you need it.</p>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="step-chip chip-1">1</div>
+      <h3>Sign up for free</h3>
+      <p>Eastside residents register for a membership. No income verification — just proof you're local.</p>
+    </div>
+    <div class="how-step">
+      <div class="step-chip chip-2">2</div>
+      <h3>Choose your gear</h3>
+      <p>Browse the collection and reserve what you need. Check availability and plan your adventure.</p>
+    </div>
+    <div class="how-step">
+      <div class="step-chip chip-3">3</div>
+      <h3>Pick it up</h3>
+      <p>Grab your gear during library hours. Borrow for 7–14 days, with extensions available.</p>
+    </div>
+    <div class="how-step">
+      <div class="step-chip chip-4">4</div>
+      <h3>Return &amp; share</h3>
+      <p>Return it clean and ready. Every return makes the next person's adventure possible.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MEMBERSHIP ─── -->
+<section class="section membership-section" id="membership">
+  <div class="membership-inner">
+    <div>
+      <div class="section-label" style="color:rgba(200,240,74,0.4)">Membership</div>
+      <h2 class="display-h2">Pricing is<br/><em style="color:var(--lime)">coming soon.</em></h2>
+      <div class="membership-text">
+        <p>We're still finalizing our membership model — and we're committed to making sure cost is never a real barrier. Whether that's a sliding scale, a pay-what-you-can model, or something else entirely, affordability is at the core of everything we design.</p>
+        <p>Sign up to be notified when membership opens, or get in touch if you have ideas on how we should structure it.</p>
+        <a href="#contact" class="btn-lime" style="margin-top:0.5rem">Stay in the loop ↗</a>
+      </div>
+    </div>
+    <div class="membership-card">
+      <h3>Community Membership</h3>
+      <div class="price-big">TBD</div>
+      <p class="price-note">Pricing will be community-informed and barrier-free.</p>
+      <div class="price-feature"><div class="dot"></div> Borrow outdoor gear anytime</div>
+      <div class="price-feature"><div class="dot"></div> 7–14 day lending periods</div>
+      <div class="price-feature"><div class="dot"></div> Online reservations</div>
+      <div class="price-feature"><div class="dot"></div> Open to all Eastside residents</div>
+      <div class="price-feature"><div class="dot"></div> Sliding scale / affordable options</div>
+      <div class="price-feature"><div class="dot"></div> No income verification required</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section class="section contact-section" id="contact">
+  <div class="section-label">Get involved</div>
+  <h2 class="display-h2">Help us build<br/>something <em>great.</em></h2>
+  <p class="body-lead">Whether you want to volunteer your time, donate equipment, or just stay in touch — we'd love to hear from you.</p>
+
+  <div class="contact-layout">
+    <div class="contact-form-wrap">
+      <h3>Say hello 👋</h3>
+      <p class="form-sub">We read every message. Seriously.</p>
+      <div id="contactForm">
+        <div class="form-group">
+          <label>Your name</label>
+          <input type="text" id="fname" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="femail" placeholder="jane@email.com" />
+        </div>
+        <div class="form-group">
+          <label>I want to...</label>
+          <select id="ftype">
+            <option value="">Select one</option>
+            <option value="volunteer">Volunteer my time</option>
+            <option value="donate">Donate equipment</option>
+            <option value="membership">Learn about membership</option>
+            <option value="partner">Explore a partnership</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tell us more</label>
+          <textarea id="fmessage" placeholder="What's on your mind? What gear do you have? When are you free?"></textarea>
+        </div>
+        <button class="btn-submit" onclick="submitForm()">Send it →</button>
+      </div>
+      <div class="form-success" id="formSuccess">
+        <div class="big-check">🎉</div>
+        <h4>Message received!</h4>
+        <p style="color:rgba(246,243,238,0.6)">We'll get back to you soon. Thanks for wanting to help — it genuinely means a lot.</p>
+      </div>
+    </div>
+
+    <div class="contact-info">
+      <h3>Three ways to plug in.</h3>
+      <p>We're an early-stage community project, which means your involvement right now makes an enormous difference. Pick a lane:</p>
+      <div class="contact-cards-list">
+        <div class="contact-info-card">
+          <div class="contact-info-card-icon icon-lime">🙋</div>
+          <div>
+            <strong>Volunteer Your Time</strong>
+            <span>Help with gear maintenance, outreach, events, cataloging, admin, or just spreading the word. Every hour counts.</span>
+          </div>
+        </div>
+        <div class="contact-info-card">
+          <div class="contact-info-card-icon icon-teal">📦</div>
+          <div>
+            <strong>Donate Equipment</strong>
+            <span>Have outdoor gear sitting in your garage? Donate gently-used tents, packs, sleeping bags, paddles, and more to the collection.</span>
+          </div>
+        </div>
+        <div class="contact-info-card">
+          <div class="contact-info-card-icon icon-sky">💚</div>
+          <div>
+            <strong>Spread the Word</strong>
+            <span>Know someone who'd benefit from borrowing gear? Know someone who'd love to donate? Tell them about us.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-brand">
+    Eastside Gear Library
+    <span>Bellevue · Redmond, WA — Borrow. Explore. Return.</span>
+  </div>
+  <nav class="footer-links" aria-label="Footer">
+    <a href="#mission">Mission</a>
+    <a href="#how">How It Works</a>
+    <a href="#membership">Membership</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</footer>
+
+<script>
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.querySelectorAll('#navLinks a').forEach(a =>
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'))
+  );
+
+  function submitForm() {
+    const name = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const type = document.getElementById('ftype').value;
+    if (!name || !email || !type) {
+      alert('Please fill in your name, email, and what you'd like to do.');
+      return;
+    }
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('formSuccess').style.display = 'block';
+  }
+
+  // Entrance animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.pillar-card, .how-step, .number-block, .contact-info-card, .membership-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(24px)';
+    el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
