@@ -750,10 +750,34 @@
     const name = document.getElementById('fname').value.trim();
     const email = document.getElementById('femail').value.trim();
     const type = document.getElementById('ftype').value;
+    const message = document.getElementById('fmessage').value.trim();
+
     if (!name || !email || !type) {
-      alert('Please fill in your name, email, and what you'd like to do.');
+      alert('Please fill in your name, email, and what you\'d like to do.');
       return;
     }
+    // basic email validation
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+
+    const subject = `Website contact: ${type}`;
+    const body = `Name: ${name}\nEmail: ${email}\nType: ${type}\n\n${message}`;
+    const mailto = `mailto:eastsidegearlibrary@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Open user's mail client with prefilled message
+    try {
+      window.location.href = mailto;
+    } catch (e) {
+      window.open(mailto, '_self');
+    }
+
+    // Clear fields to indicate action taken and show success UI
+    document.getElementById('fname').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('ftype').value = '';
+    document.getElementById('fmessage').value = '';
     document.getElementById('contactForm').style.display = 'none';
     document.getElementById('formSuccess').style.display = 'block';
   }
